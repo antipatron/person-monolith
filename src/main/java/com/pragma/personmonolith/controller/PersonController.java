@@ -2,6 +2,7 @@ package com.pragma.personmonolith.controller;
 
 
 import com.pragma.personmonolith.dto.PersonDto;
+import com.pragma.personmonolith.dto.PersonImageDto;
 import com.pragma.personmonolith.facade.PersonFacade;
 import com.pragma.personmonolith.model.Person;
 import com.pragma.personmonolith.util.StandardResponse;
@@ -24,19 +25,19 @@ public class PersonController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Save person", response = PersonDto.class)
+    @ApiOperation(value = "Save person with image", response = PersonImageDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<PersonDto>> createPerson(
-            @Valid @RequestBody PersonDto personDto){
-        PersonDto personDto1 = personFacade.createPerson(personDto);
+    public ResponseEntity<StandardResponse<PersonImageDto>> createPerson(
+            @Valid @RequestBody PersonImageDto personImageDto){
+        PersonImageDto personImageDto1 = personFacade.createPerson(personImageDto);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
                 "person.create.ok",
-                personDto1));
+                personImageDto1));
     }
 
     @PutMapping
