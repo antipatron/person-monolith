@@ -87,4 +87,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ObjectNoEncontradoException.class)
+    public final ResponseEntity<StandardResponse> handleObjectNoEncontrado(HttpServletRequest request, ObjectNoEncontradoException ex){
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
 }

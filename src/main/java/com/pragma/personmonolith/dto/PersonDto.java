@@ -23,7 +23,8 @@ public class PersonDto {
     private String age;
     @NotBlank
     private String cityBirth;
-    private IdentificationType identificationType;
+
+    private IdentificationTypeDto identificationTypeDto;
 
     public Integer getId() {
         return id;
@@ -81,11 +82,11 @@ public class PersonDto {
         this.cityBirth = cityBirth;
     }
 
-    public IdentificationType getIdentificationType() {
-        return identificationType;
+    public IdentificationTypeDto getIdentificationTypeDto() {
+        return identificationTypeDto;
     }
 
-    public void setIdentificationType(IdentificationType identificationType) {
-        this.identificationType = identificationType;
+    public void setIdentificationTypeDto(IdentificationTypeDto identificationTypeDto) {
+        this.identificationTypeDto = identificationTypeDto;
     }
 }

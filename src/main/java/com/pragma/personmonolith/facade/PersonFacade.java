@@ -25,7 +25,10 @@ public class PersonFacade {
     }
 
     public PersonDto editPerson(PersonDto personDto){
-        return null;
+        System.out.println("ID: ##"+personDto.getId());
+
+        return personMapper.toDto(personService.editPerson(personMapper.toEntity(personDto)));
+
     }
 
     public void deletePerson(Integer id){

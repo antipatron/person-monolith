@@ -3,8 +3,10 @@ package com.pragma.personmonolith.service;
 import com.pragma.personmonolith.exception.DataConstraintViolationException;
 import com.pragma.personmonolith.exception.DataDuplicatedException;
 import com.pragma.personmonolith.exception.DataNotFoundException;
+import com.pragma.personmonolith.exception.ObjectNoEncontradoException;
 import com.pragma.personmonolith.model.Person;
 import com.pragma.personmonolith.model.PersonRepository;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,22 @@ public class PersonService{
     }
 
     public Person editPerson(Person person){
-        return null;
+        if(Objects.isNull(person.getId())){
+            throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
+        }
+
+        System.out.println("ID: ##"+person.getId());
+        Person personTransaction = personRepository.findById(person.getId())
+                .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.person"));
+
+        personTransaction.setName(person.getName());
+        personTransaction.setLastName(person.getLastName());
+        personTransaction.setIdentification(person.getIdentification());
+        personTransaction.setIdentificationTypeId(person.getIdentificationTypeId());
+        personTransaction.setAge(person.getAge());
+        personTransaction.setCityBirth(person.getCityBirth());
+
+        return personTransaction;
     }
 
     public void deletePerson(Integer id){
@@ -47,6 +64,14 @@ public class PersonService{
 
     public List<Person> findAll(){
         return null;
+    }
+
+    public Person findById(Integer id){
+        if(Objects.isNull(id)){
+            throw new ObjectNotFoundException(id, "exception.objeto_no_encontrado");
+        }
+        return personRepository.findById(id)
+                .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.person"));
     }
 
 
