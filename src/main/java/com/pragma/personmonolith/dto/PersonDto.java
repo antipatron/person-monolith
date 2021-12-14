@@ -1,7 +1,5 @@
 package com.pragma.personmonolith.dto;
 
-import com.pragma.personmonolith.model.IdentificationType;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

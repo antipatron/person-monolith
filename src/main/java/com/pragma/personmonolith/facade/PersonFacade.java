@@ -31,12 +31,13 @@ public class PersonFacade {
 
     }
 
-    public void deletePerson(Integer id){
+    public void deletePerson(Integer personId){
+        personService.deletePerson(personId);
 
     }
 
     public List<PersonDto> findAll(){
-        return null;
+        return personMapper.toDto(personService.findAll());
     }
 
 

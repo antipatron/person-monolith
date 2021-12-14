@@ -59,11 +59,23 @@ public class PersonService{
         return personTransaction;
     }
 
-    public void deletePerson(Integer id){
+    public void deletePerson(Integer personId){
+        if(Objects.nonNull(personId)){
+            Optional<Person> productOptional = personRepository.findById(personId);
+            if(!productOptional.isPresent()){
+                throw new DataNotFoundException("exception.data_not_found.person");
+            }
+        }
+
+        personRepository.deleteById(personId);
     }
 
     public List<Person> findAll(){
-        return null;
+        List<Person> personList = personRepository.findAll();
+        if (personList.isEmpty()){
+            throw new DataNotFoundException("exception.data_not_found.person");
+        }
+        return personList;
     }
 
     public Person findById(Integer id){
