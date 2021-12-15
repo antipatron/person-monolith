@@ -15,7 +15,7 @@ public class Image {
     @Column(name = "person_id")
     private Integer personId;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="person_id", insertable = false, updatable = false, nullable = false)
     private Person person;
 

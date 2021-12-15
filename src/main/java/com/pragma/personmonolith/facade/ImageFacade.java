@@ -1,6 +1,7 @@
 package com.pragma.personmonolith.facade;
 
 import com.pragma.personmonolith.dto.ImageDto;
+import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.mapper.ImageMapper;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.service.ImageService;
@@ -38,11 +39,12 @@ public class ImageFacade {
     }
 
     public void deleteImage(Integer imageId){
+        imageService.deleteImage(imageId);
 
     }
 
     public List<ImageDto> findAll(){
-        return null;
+        return imageMapper.toDto(imageService.findAll());
     }
 
 }

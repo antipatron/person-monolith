@@ -23,7 +23,7 @@ public class Person {
 
     private String cityBirth;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="identification_type_id", insertable = false, updatable = false, nullable = false)
     private IdentificationType identificationType;
 

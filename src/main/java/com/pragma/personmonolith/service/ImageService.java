@@ -6,11 +6,13 @@ import com.pragma.personmonolith.exception.DataNotFoundException;
 import com.pragma.personmonolith.exception.ObjectNoEncontradoException;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.ImageRepository;
+import com.pragma.personmonolith.model.Person;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -50,6 +52,25 @@ public class ImageService {
         imageTransaction.setPersonId(image.getPersonId());
 
         return imageTransaction;
+    }
+
+    public void deleteImage(Integer imageId){
+        if(Objects.nonNull(imageId)){
+            Optional<Image> imageOptional = imageRepository.findById(imageId);
+            if(!imageOptional.isPresent()){
+                throw new DataNotFoundException("exception.data_not_found.image");
+            }
+        }
+
+        imageRepository.deleteById(imageId);
+    }
+
+    public List<Image> findAll(){
+        List<Image> imageList = imageRepository.findAll();
+        if (imageList.isEmpty()){
+            throw new DataNotFoundException("exception.data_not_found.image");
+        }
+        return imageList;
     }
 
     public Image findById(Integer id){
