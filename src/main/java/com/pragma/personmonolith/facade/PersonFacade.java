@@ -21,6 +21,7 @@ public class PersonFacade {
     private ImageService imageService;
     private PersonMapper personMapper;
 
+    //TODO rafactorizar a I
     public PersonFacade(PersonService personService,ImageService imageService,
                         PersonMapper personMapper) {
         this.personService = personService;
@@ -29,7 +30,61 @@ public class PersonFacade {
     }
 
     public PersonImageDto createPerson(PersonImageDto personImageDto, MultipartFile imagePart){
+        Person person = mappingPerson(personImageDto);
+        person = personService.createPerson(person);
+        personImageDto.setPersonId(person.getId());
+
+        if (!imagePart.isEmpty()){
+            Image image= mappingImage(personImageDto.getImageId(), person.getId(),imagePart);
+            image = imageService.createImage(image);
+            personImageDto.setImageId(image.getId());
+        }
+
+        return personImageDto;
+    }
+
+
+
+    public PersonImageDto editPerson(PersonImageDto personImageDto, MultipartFile imagePart){
+        Person person = mappingPerson(personImageDto);
+        PersonDto personDto = personMapper.toDto(personService.editPerson(person));
+
+        //TODO puedo refactorizar esta parte y juntarla con la parte del guardar.
+        PersonImageDto personImageDtoEdit = new PersonImageDto();
+        personImageDtoEdit.setPersonId(personDto.getId());
+        personImageDtoEdit.setName(personDto.getName());
+        personImageDtoEdit.setLastName(personDto.getLastName());
+        personImageDtoEdit.setIdentification(personDto.getIdentification());
+        personImageDtoEdit.setIdentificationTypeId(personDto.getIdentificationTypeId());
+        personImageDtoEdit.setAge(personDto.getAge());
+        personImageDtoEdit.setCityBirth(personDto.getCityBirth());
+
+        if (!imagePart.isEmpty()){
+            if(personImageDto.getImageId()!=null){
+                Image imageEdit = mappingImage(personImageDto.getImageId(), personImageDto.getPersonId(), imagePart);
+                imageEdit = imageService.editImage(imageEdit);
+                personImageDtoEdit.setImageId(imageEdit.getId());
+            }else{
+                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(), imagePart));
+                personImageDtoEdit.setImageId(image.getId());
+            }
+        }
+
+        return personImageDtoEdit;
+    }
+
+    private Image mappingImage(Integer imageId, Integer personId, MultipartFile imagePart){
+        Image image = new Image();
+        image.setId(imageId);
+        image.setImage(ObjectTypeConverter.image2Base64(imagePart));
+        image.setPersonId(personId);
+        return image;
+    }
+
+    private Person mappingPerson(PersonImageDto personImageDto){
         Person person = new Person();
+        person.setId(personImageDto.getPersonId());
+
         person.setName(personImageDto.getName());
         person.setLastName(personImageDto.getLastName());
         person.setIdentification(personImageDto.getIdentification());
@@ -37,26 +92,8 @@ public class PersonFacade {
         person.setAge(personImageDto.getAge());
         person.setCityBirth(personImageDto.getCityBirth());
 
-        person = personService.createPerson(person);
-        personImageDto.setPersonId(person.getId());
+        return person;
 
-        if (!imagePart.isEmpty()){
-            Image image = new Image();
-
-            image.setImage(ObjectTypeConverter.image2Base64(imagePart));
-            image.setPersonId(personImageDto.getPersonId());
-            image = imageService.createImage(image);
-
-            personImageDto.setImageId(image.getId());
-
-        }
-
-        return personImageDto;
-
-    }
-
-    public PersonDto editPerson(PersonDto personDto){
-        return personMapper.toDto(personService.editPerson(personMapper.toEntity(personDto)));
     }
 
     public void deletePerson(Integer personId){

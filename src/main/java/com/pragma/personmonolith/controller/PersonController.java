@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/person")
@@ -34,6 +36,8 @@ public class PersonController {
     public ResponseEntity<StandardResponse<PersonImageDto>> createPerson(
             @Valid @RequestPart("person") PersonImageDto personImageDto, @RequestPart MultipartFile image){
 
+        Logger.getGlobal().log(Level.INFO, "Imagen recibida: "+image.getOriginalFilename());
+
         PersonImageDto personImageDto1 = personFacade.createPerson(personImageDto, image);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
@@ -42,19 +46,19 @@ public class PersonController {
     }
 
     @PutMapping
-    @ApiOperation(value = "Edit person", response = PersonDto.class)
+    @ApiOperation(value = "Edit person", response = PersonImageDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<PersonDto>> editPerson(
-            @Valid @RequestBody PersonDto personDto){
-        PersonDto personDto1 = personFacade.editPerson(personDto);
+    public ResponseEntity<StandardResponse<PersonImageDto>> editPerson(
+            @Valid @RequestPart("person") PersonImageDto personImageDto, @RequestPart MultipartFile image){
+        PersonImageDto personImageDto1 = personFacade.editPerson(personImageDto, image);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
                 "person.edit.ok",
-                personDto1));
+                personImageDto1));
     }
 
     @DeleteMapping("/delete")
