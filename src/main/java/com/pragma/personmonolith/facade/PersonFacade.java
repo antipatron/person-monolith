@@ -1,6 +1,5 @@
 package com.pragma.personmonolith.facade;
 
-import com.pragma.personmonolith.dto.ImageDto;
 import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.dto.PersonImageDto;
 import com.pragma.personmonolith.mapper.PersonMapper;
@@ -8,9 +7,10 @@ import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.Person;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
-import org.springframework.security.core.parameters.P;
+import com.pragma.personmonolith.util.ObjectTypeConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class PersonFacade {
         this.personMapper = personMapper;
     }
 
-    public PersonImageDto createPerson(PersonImageDto personImageDto){
+    public PersonImageDto createPerson(PersonImageDto personImageDto, MultipartFile imagePart){
         Person person = new Person();
         person.setName(personImageDto.getName());
         person.setLastName(personImageDto.getLastName());
@@ -40,10 +40,10 @@ public class PersonFacade {
         person = personService.createPerson(person);
         personImageDto.setPersonId(person.getId());
 
-        if (personImageDto.getImage()!=null){
+        if (!imagePart.isEmpty()){
             Image image = new Image();
 
-            image.setImage(personImageDto.getImage());
+            image.setImage(ObjectTypeConverter.image2Base64(imagePart));
             image.setPersonId(personImageDto.getPersonId());
             image = imageService.createImage(image);
 
@@ -56,10 +56,7 @@ public class PersonFacade {
     }
 
     public PersonDto editPerson(PersonDto personDto){
-        System.out.println("ID: ##"+personDto.getId());
-
         return personMapper.toDto(personService.editPerson(personMapper.toEntity(personDto)));
-
     }
 
     public void deletePerson(Integer personId){

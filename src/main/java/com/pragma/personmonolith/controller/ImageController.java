@@ -1,9 +1,7 @@
 package com.pragma.personmonolith.controller;
 
-
-import com.pragma.personmonolith.dto.PersonDto;
-import com.pragma.personmonolith.dto.PersonImageDto;
-import com.pragma.personmonolith.facade.PersonFacade;
+import com.pragma.personmonolith.dto.ImageDto;
+import com.pragma.personmonolith.facade.ImageFacade;
 import com.pragma.personmonolith.util.StandardResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,76 +14,76 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/person")
-public class PersonController {
-    private PersonFacade personFacade;
+@RequestMapping("/image")
+public class ImageController {
 
-    public PersonController(PersonFacade personFacade) {
-        this.personFacade = personFacade;
+    private ImageFacade imageFacade;
+
+    public ImageController(ImageFacade imageFacade) {
+        this.imageFacade = imageFacade;
     }
 
-    @PostMapping()
-    @ApiOperation(value = "Save person with image", response = PersonImageDto.class)
+    @PostMapping
+    @ApiOperation(value = "Save image", response = ImageDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<PersonImageDto>> createPerson(
-            @Valid @RequestPart("person") PersonImageDto personImageDto, @RequestPart MultipartFile image){
+    public ResponseEntity<StandardResponse<ImageDto>> createImage(
+            @Valid @RequestPart("imageDto") ImageDto imageDto, @RequestPart MultipartFile image){
+        ImageDto imageDto1 = imageFacade.createImage(imageDto, image);
 
-        PersonImageDto personImageDto1 = personFacade.createPerson(personImageDto, image);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
-                "person.create.ok",
-                personImageDto1));
+                "image.create.ok",
+                imageDto1));
     }
 
     @PutMapping
-    @ApiOperation(value = "Edit person", response = PersonDto.class)
+    @ApiOperation(value = "Edit image", response = ImageDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<PersonDto>> editPerson(
-            @Valid @RequestBody PersonDto personDto){
-        PersonDto personDto1 = personFacade.editPerson(personDto);
+    public ResponseEntity<StandardResponse<ImageDto>> editImage(
+            @Valid @RequestPart("imageDto") ImageDto imageDto, @RequestPart MultipartFile image){
+        ImageDto imageDto1 = imageFacade.editImage(imageDto, image);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
-                "person.edit.ok",
-                personDto1));
+                "image.edit.ok",
+                imageDto1));
     }
 
     @DeleteMapping("/delete")
-    @ApiOperation(value = "Delete person by id", response = String.class)
+    @ApiOperation(value = "Delete image by id", response = String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<String>> deletePerson(
-            @RequestParam(name = "personId")  Integer personId){
+    public ResponseEntity<StandardResponse<String>> deleteImage(
+            @RequestParam(name = "imageId")  Integer imageId){
 
-        personFacade.deletePerson(personId);
-        return ResponseEntity.accepted().body(new StandardResponse<>(StandardResponse.StatusStandardResponse.OK,"delete.person.ok"));
+        imageFacade.deleteImage(imageId);
+        return ResponseEntity.accepted().body(new StandardResponse<>(StandardResponse.StatusStandardResponse.OK,"delete.image.ok"));
 
     }
 
     @GetMapping("/get-all")
-    @ApiOperation(value = "Get all", response = PersonDto.class)
+    @ApiOperation(value = "Get all", response = ImageDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<List<PersonDto>>> findAll(){
+    public ResponseEntity<StandardResponse<List<ImageDto>>> findAll(){
 
-        List<PersonDto> personDtoList = personFacade.findAll();
+        List<ImageDto> imageDtoList = imageFacade.findAll();
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
-                personDtoList));
+                imageDtoList));
     }
-
 
 }

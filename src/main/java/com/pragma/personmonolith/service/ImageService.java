@@ -3,7 +3,9 @@ package com.pragma.personmonolith.service;
 import com.pragma.personmonolith.exception.DataConstraintViolationException;
 import com.pragma.personmonolith.exception.DataDuplicatedException;
 import com.pragma.personmonolith.exception.DataNotFoundException;
-import com.pragma.personmonolith.model.*;
+import com.pragma.personmonolith.exception.ObjectNoEncontradoException;
+import com.pragma.personmonolith.model.Image;
+import com.pragma.personmonolith.model.ImageRepository;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -36,11 +38,26 @@ public class ImageService {
         }
     }
 
+    public Image editImage(Image image){
+        if(Objects.isNull(image.getId())){
+            throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
+        }
+
+        Image imageTransaction = imageRepository.findById(image.getId())
+                .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
+
+        imageTransaction.setImage(image.getImage());
+        imageTransaction.setPersonId(image.getPersonId());
+
+        return imageTransaction;
+    }
+
     public Image findById(Integer id){
         if(Objects.isNull(id)){
             throw new ObjectNotFoundException(id, "exception.objeto_no_encontrado");
         }
         return imageRepository.findById(id)
                 .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
+
     }
 }

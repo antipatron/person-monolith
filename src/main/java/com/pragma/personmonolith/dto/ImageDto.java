@@ -1,13 +1,14 @@
 package com.pragma.personmonolith.dto;
 
-import com.pragma.personmonolith.model.Person;
+import javax.validation.constraints.NotNull;
 
 public class ImageDto {
 
     private Integer id;
     private String image;
+    @NotNull
     private Integer personId;
-    private Person person;
+    private PersonDto personDto;
 
     public Integer getId() {
         return id;
@@ -33,11 +34,11 @@ public class ImageDto {
         this.personId = personId;
     }
 
-    public Person getPerson() {
-        return person;
+    public PersonDto getPersonDto() {
+        return personDto;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPersonDto(PersonDto personDto) {
+        this.personDto = personDto;
     }
 }
