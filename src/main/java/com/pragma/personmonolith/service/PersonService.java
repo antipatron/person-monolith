@@ -86,6 +86,24 @@ public class PersonService{
                 .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.person"));
     }
 
+    public List<Person> findByAgeGreaterThanEqual(Integer age){
+        List<Person> personList = personRepository.findByAgeGreaterThanEqual(age);
+        if (personList.isEmpty()){
+            throw new DataNotFoundException("exception.data_not_found.person");
+        }
+        return personList;
+    }
+
+    public List<Person> findByAgeLessThanEqual(Integer age){
+        List<Person> personList = personRepository.findByAgeLessThanEqual(age);
+        if (personList.isEmpty()){
+            throw new DataNotFoundException("exception.data_not_found.person");
+        }
+        return personList;
+    }
+
+
+
 
 
 

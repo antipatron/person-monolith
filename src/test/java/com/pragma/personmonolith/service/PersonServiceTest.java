@@ -37,12 +37,12 @@ class PersonServiceTest {
         MockitoAnnotations.openMocks(this);
 
         person = new Person();
-        person.setId(1);
+        person.setId(22);
         person.setName("Cantinflas");
         person.setLastName("Infabtes");
         person.setIdentification("123456901");
         person.setIdentificationTypeId(1);
-        person.setAge("56");
+        person.setAge(6);
         person.setCityBirth("leticia");
 
 
@@ -61,21 +61,7 @@ class PersonServiceTest {
         assertNotNull(personService.createPerson(person));
     }
 
-    @Test
-    void editPerson() {
-        Person person = new Person();
-        person.setId(1);
-        person.setName("Cantinflas2");
-        person.setLastName("Infabtes");
-        person.setIdentification("123456901");
-        person.setIdentificationTypeId(1);
-        person.setAge("34");
-        person.setCityBirth("leticia");
 
-        when(personRepository.save(person)).thenReturn(person);
-        assertThat(personService.editPerson(person).getAge().equals("34"));
-
-    }
 
     @Test
     public void whenGetAllThenReturnListPerson(){
@@ -85,6 +71,6 @@ class PersonServiceTest {
     @Test
     public void whenValidGetIdThenReturnPerson(){
         Person personFound = personService.findById(1);
-        Assertions.assertThat(personFound.getAge().equals("56"));
+        Assertions.assertThat(personFound.getAge().equals(56));
     }
 }

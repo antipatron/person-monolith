@@ -23,7 +23,7 @@ public class PersonImageDto {
     private Integer identificationTypeId;
     @NotBlank
     @Size(max = 3)
-    private String age;
+    private Integer age;
     @NotBlank
     private String cityBirth;
     private Integer imageId;
@@ -69,11 +69,11 @@ public class PersonImageDto {
         this.identificationTypeId = identificationTypeId;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

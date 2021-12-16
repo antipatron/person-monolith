@@ -28,7 +28,7 @@ public class Person {
     @Column(name = "identification_type_id")
     private Integer identificationTypeId;
 
-    private String age;
+    private Integer age;
 
     private String cityBirth;
 
@@ -76,11 +76,11 @@ public class Person {
         this.identificationTypeId = identificationTypeId;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,6 +87,36 @@ public class PersonController {
     public ResponseEntity<StandardResponse<List<PersonDto>>> findAll(){
 
         List<PersonDto> personDtoList = personFacade.findAll();
+        return ResponseEntity.ok(new StandardResponse<>(
+                StandardResponse.StatusStandardResponse.OK,
+                personDtoList));
+    }
+
+    @GetMapping("/get-age-greaterthan-equal")
+    @ApiOperation(value = "Get findByAgeGreaterThanEqual", response = PersonDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
+            @ApiResponse(code = 400, message = "La petición es inválida"),
+            @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
+    })
+    public ResponseEntity<StandardResponse<List<PersonDto>>> findByAgeGreaterThanEqual(@RequestParam(name = "age") Integer age ){
+
+        List<PersonDto> personDtoList = personFacade.findByAgeGreaterThanEqual(age);
+        return ResponseEntity.ok(new StandardResponse<>(
+                StandardResponse.StatusStandardResponse.OK,
+                personDtoList));
+    }
+
+    @GetMapping("/get-age-lessthan-equal")
+    @ApiOperation(value = "Get findByAgeLessThanEqual", response = PersonDto.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
+            @ApiResponse(code = 400, message = "La petición es inválida"),
+            @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
+    })
+    public ResponseEntity<StandardResponse<List<PersonDto>>> findByAgeLessThanEqual(@NotBlank @RequestParam(name = "age") Integer age ){
+
+        List<PersonDto> personDtoList = personFacade.findByAgeLessThanEqual(age);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
                 personDtoList));

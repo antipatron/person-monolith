@@ -105,5 +105,11 @@ public class PersonFacade {
         return personMapper.toDto(personService.findAll());
     }
 
+    public List<PersonDto> findByAgeGreaterThanEqual(Integer age){
+        return personMapper.toDto(personService.findByAgeGreaterThanEqual(age));
+    }
 
+    public List<PersonDto> findByAgeLessThanEqual(Integer age){
+        return personMapper.toDto(personService.findByAgeLessThanEqual(age));
+    }
 }
