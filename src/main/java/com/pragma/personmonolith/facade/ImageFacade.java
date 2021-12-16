@@ -1,9 +1,8 @@
 package com.pragma.personmonolith.facade;
 
 import com.pragma.personmonolith.dto.ImageDto;
-import com.pragma.personmonolith.dto.PersonDto;
-import com.pragma.personmonolith.mapper.ImageMapper;
 import com.pragma.personmonolith.model.Image;
+import com.pragma.personmonolith.mapper.ImageMapper;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.util.ObjectTypeConverter;
 import org.springframework.stereotype.Service;

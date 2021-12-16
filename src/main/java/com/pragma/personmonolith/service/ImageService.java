@@ -6,7 +6,6 @@ import com.pragma.personmonolith.exception.DataNotFoundException;
 import com.pragma.personmonolith.exception.ObjectNoEncontradoException;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.ImageRepository;
-import com.pragma.personmonolith.model.Person;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

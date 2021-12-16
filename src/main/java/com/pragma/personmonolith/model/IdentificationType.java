@@ -1,5 +1,10 @@
 package com.pragma.personmonolith.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,6 +14,10 @@ import javax.persistence.GenerationType;
 
 @Entity
 @Table(name = "identification_type")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class IdentificationType {
 
     @Id

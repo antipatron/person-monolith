@@ -1,5 +1,11 @@
 package com.pragma.personmonolith.dto;
 
+import lombok.*;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class IdentificationTypeDto {
     private Integer id;
     private String description;

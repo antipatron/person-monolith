@@ -1,7 +1,13 @@
 package com.pragma.personmonolith.dto;
 
+import lombok.*;
+
 import javax.validation.constraints.NotNull;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ImageDto {
 
     private Integer id;

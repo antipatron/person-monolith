@@ -1,10 +1,16 @@
 package com.pragma.personmonolith.dto;
 
+import lombok.*;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonDto {
 
     private Integer id;
@@ -21,8 +27,6 @@ public class PersonDto {
     private String age;
     @NotBlank
     private String cityBirth;
-
-    private IdentificationTypeDto identificationTypeDto;
 
     public Integer getId() {
         return id;
@@ -78,13 +82,5 @@ public class PersonDto {
 
     public void setCityBirth(String cityBirth) {
         this.cityBirth = cityBirth;
-    }
-
-    public IdentificationTypeDto getIdentificationTypeDto() {
-        return identificationTypeDto;
-    }
-
-    public void setIdentificationTypeDto(IdentificationTypeDto identificationTypeDto) {
-        this.identificationTypeDto = identificationTypeDto;
     }
 }

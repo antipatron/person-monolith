@@ -2,9 +2,9 @@ package com.pragma.personmonolith.facade;
 
 import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.dto.PersonImageDto;
-import com.pragma.personmonolith.mapper.PersonMapper;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.Person;
+import com.pragma.personmonolith.mapper.PersonMapper;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
 import com.pragma.personmonolith.util.ObjectTypeConverter;
