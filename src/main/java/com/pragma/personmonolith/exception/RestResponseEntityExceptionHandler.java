@@ -34,6 +34,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ImageNotComeBodyException.class)
+    public final ResponseEntity<StandardResponse> handleImageNotComeBody(HttpServletRequest request, ImageNotComeBodyException ex){
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(DataConstraintViolationException.class)
     public final ResponseEntity<StandardResponse> handleDataIntegrityViolation(HttpServletRequest request, DataConstraintViolationException ex){
         logger.error(request.getRequestURL().toString(), ex);

@@ -23,6 +23,7 @@ public class Person {
 
     private String lastName;
 
+    @Column(unique = true)
     private String identification;
 
     @Column(name = "identification_type_id")

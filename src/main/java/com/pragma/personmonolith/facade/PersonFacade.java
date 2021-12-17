@@ -2,6 +2,7 @@ package com.pragma.personmonolith.facade;
 
 import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.dto.PersonImageDto;
+import com.pragma.personmonolith.exception.ImageNotComeBodyException;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.Person;
 import com.pragma.personmonolith.mapper.PersonMapper;
@@ -12,7 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.pragma.personmonolith.util.ObjectTypeConverter.image2Base64;
+import static com.pragma.personmonolith.util.OptionalFieldValidator.imageComeOnBody;
 
 @Service
 @Transactional
@@ -46,11 +51,30 @@ public class PersonFacade {
 
 
     public PersonImageDto editPerson(PersonImageDto personImageDto, MultipartFile imagePart){
+
         Person person = mappingPerson(personImageDto);
         PersonDto personDto = personMapper.toDto(personService.editPerson(person));
 
         //TODO puedo refactorizar esta parte y juntarla con la parte del guardar.
         PersonImageDto personImageDtoEdit = new PersonImageDto();
+
+        if (!imagePart.isEmpty()){
+            //TODO comprobar que si tenga imagen en bd (restriccion es una persona una imagen)
+            if(hasImage(personImageDto.getPersonId())){
+                if(imageComeOnBody(personImageDto.getImageId())){
+                    Image imageEdit = mappingImage(personImageDto.getImageId(), personImageDto.getPersonId(), imagePart);
+                    imageEdit = imageService.editImage(imageEdit);
+                    personImageDtoEdit.setImageId(imageEdit.getId());
+                }else{
+                    throw new ImageNotComeBodyException("exception.not_come_body.image");
+                }
+
+            }else{
+                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(), imagePart));
+                personImageDtoEdit.setImageId(image.getId());
+            }
+        }
+        
         personImageDtoEdit.setPersonId(personDto.getId());
         personImageDtoEdit.setName(personDto.getName());
         personImageDtoEdit.setLastName(personDto.getLastName());
@@ -59,24 +83,13 @@ public class PersonFacade {
         personImageDtoEdit.setAge(personDto.getAge());
         personImageDtoEdit.setCityBirth(personDto.getCityBirth());
 
-        if (!imagePart.isEmpty()){
-            if(personImageDto.getImageId()!=null){
-                Image imageEdit = mappingImage(personImageDto.getImageId(), personImageDto.getPersonId(), imagePart);
-                imageEdit = imageService.editImage(imageEdit);
-                personImageDtoEdit.setImageId(imageEdit.getId());
-            }else{
-                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(), imagePart));
-                personImageDtoEdit.setImageId(image.getId());
-            }
-        }
-
         return personImageDtoEdit;
     }
 
     private Image mappingImage(String imageId, Integer personId, MultipartFile imagePart){
         Image image = new Image();
         image.setId(imageId);
-        image.setImage(ObjectTypeConverter.image2Base64(imagePart));
+        image.setImage(image2Base64(imagePart));
         image.setPersonId(personId);
         return image;
     }
@@ -96,13 +109,49 @@ public class PersonFacade {
 
     }
 
+    private boolean hasImage(Integer personId){
+        return !imageService.findByPersonId(personId).getImage().isEmpty();
+    }
+
     public void deletePerson(Integer personId){
+        //TODO buscar si la persona tiene imagen, si es así, eliminar la imagen
+        Image image = imageService.findByPersonId(personId);
+        if(!image.getImage().isEmpty()){
+            imageService.deleteImage(image.getId());
+        }
+
         personService.deletePerson(personId);
 
     }
 
-    public List<PersonDto> findAll(){
-        return personMapper.toDto(personService.findAll());
+    public List<PersonImageDto> findAll(){
+
+        List<PersonDto> personDtoList = personMapper.toDto(personService.findAll());
+        List<PersonImageDto> personImageDtoList = new ArrayList<>();
+
+
+        personDtoList.forEach(personDto -> {
+
+            PersonImageDto personImageDto = new PersonImageDto();
+
+            personImageDto.setPersonId(personDto.getId());
+            personImageDto.setName(personDto.getName());
+            personImageDto.setLastName(personDto.getLastName());
+            personImageDto.setIdentification(personDto.getIdentification());
+            personImageDto.setIdentificationTypeId(personDto.getIdentificationTypeId());
+            personImageDto.setAge(personDto.getAge());
+            personImageDto.setCityBirth(personDto.getCityBirth());
+            personImageDto.setImageId(imageService.findByPersonId(personDto.getId()).getId());
+
+            personImageDtoList.add(personImageDto);
+
+        });
+
+
+
+        return personImageDtoList;
+
+
     }
 
     public List<PersonDto> findByAgeGreaterThanEqual(Integer age){

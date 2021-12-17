@@ -43,7 +43,7 @@ public class ImageService {
         if(Objects.isNull(image.getId())){
             throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
         }
-        imageRepository.insert(image);
+        imageRepository.save(image);
 
         return image;
     }
@@ -65,6 +65,16 @@ public class ImageService {
             throw new DataNotFoundException("exception.data_not_found.image");
         }
         return imageList;
+    }
+
+    public Image findByPersonId(Integer personId){
+        if(Objects.isNull(personId)){
+            throw new ObjectNotFoundException(personId, "exception.objeto_no_encontrado");
+        }
+        Image imageTemp = new Image();
+        imageTemp.setImage("");
+        return imageRepository.findByPersonId(personId).orElse(imageTemp);
+
     }
 
     public Image findById(String id){

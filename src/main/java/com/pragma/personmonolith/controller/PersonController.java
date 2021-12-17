@@ -78,15 +78,15 @@ public class PersonController {
     }
 
     @GetMapping("/get-all")
-    @ApiOperation(value = "Get all", response = PersonDto.class)
+    @ApiOperation(value = "Get all", response = PersonImageDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "La petición fue procesada con éxito"),
             @ApiResponse(code = 400, message = "La petición es inválida"),
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
-    public ResponseEntity<StandardResponse<List<PersonDto>>> findAll(){
+    public ResponseEntity<StandardResponse<List<PersonImageDto>>> findAll(){
 
-        List<PersonDto> personDtoList = personFacade.findAll();
+        List<PersonImageDto> personDtoList = personFacade.findAll();
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
                 personDtoList));
