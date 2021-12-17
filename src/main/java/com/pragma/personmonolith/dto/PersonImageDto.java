@@ -21,12 +21,11 @@ public class PersonImageDto {
     private String identification;
     @NotNull
     private Integer identificationTypeId;
-    @NotBlank
-    @Size(max = 3)
+    @NotNull
     private Integer age;
     @NotBlank
     private String cityBirth;
-    private Integer imageId;
+    private String imageId;
     private String image;
 
     public Integer getPersonId() {
@@ -85,11 +84,11 @@ public class PersonImageDto {
         this.cityBirth = cityBirth;
     }
 
-    public Integer getImageId() {
+    public String getImageId() {
         return imageId;
     }
 
-    public void setImageId(Integer imageId) {
+    public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 

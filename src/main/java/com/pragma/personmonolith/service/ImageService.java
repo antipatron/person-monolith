@@ -33,7 +33,7 @@ public class ImageService {
         }
 
         try {
-            return imageRepository.save(image);
+            return imageRepository.insert(image);
         }catch (DataIntegrityViolationException e) {
             throw new DataConstraintViolationException("exception.data_constraint_violation.image");
         }
@@ -53,7 +53,7 @@ public class ImageService {
         return imageTransaction;
     }
 
-    public void deleteImage(Integer imageId){
+    public void deleteImage(String imageId){
         if(Objects.nonNull(imageId)){
             Optional<Image> imageOptional = imageRepository.findById(imageId);
             if(!imageOptional.isPresent()){
@@ -72,7 +72,7 @@ public class ImageService {
         return imageList;
     }
 
-    public Image findById(Integer id){
+    public Image findById(String id){
         if(Objects.isNull(id)){
             throw new ObjectNotFoundException(id, "exception.objeto_no_encontrado");
         }

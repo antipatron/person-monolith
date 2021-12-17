@@ -64,7 +64,7 @@ public class ImageController {
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
     public ResponseEntity<StandardResponse<String>> deleteImage(
-            @RequestParam(name = "imageId")  Integer imageId){
+            @RequestParam(name = "imageId")  String imageId){
 
         imageFacade.deleteImage(imageId);
         return ResponseEntity.accepted().body(new StandardResponse<>(StandardResponse.StatusStandardResponse.OK,"delete.image.ok"));

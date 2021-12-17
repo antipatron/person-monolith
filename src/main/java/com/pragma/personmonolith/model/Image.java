@@ -1,38 +1,33 @@
 package com.pragma.personmonolith.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 
-@Entity
-@Table(name = "image")
+
+@Document(collection = "image")
+@JsonPropertyOrder({"id","description","name"})
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Image {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     private String image;
 
-    @Column(name = "person_id")
     private Integer personId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="person_id", insertable = false, updatable = false, nullable = false)
-    private Person person;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -52,11 +47,5 @@ public class Image {
         this.personId = personId;
     }
 
-    public Person getPerson() {
-        return person;
-    }
 
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 }

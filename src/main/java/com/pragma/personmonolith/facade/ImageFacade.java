@@ -37,7 +37,7 @@ public class ImageFacade {
         return imageDtoEdit;
     }
 
-    public void deleteImage(Integer imageId){
+    public void deleteImage(String imageId){
         imageService.deleteImage(imageId);
 
     }

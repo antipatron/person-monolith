@@ -10,17 +10,17 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ImageDto {
 
-    private Integer id;
+    private String id;
     private String image;
     @NotNull
     private Integer personId;
-    private PersonDto personDto;
 
-    public Integer getId() {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -40,11 +40,5 @@ public class ImageDto {
         this.personId = personId;
     }
 
-    public PersonDto getPersonDto() {
-        return personDto;
-    }
 
-    public void setPersonDto(PersonDto personDto) {
-        this.personDto = personDto;
-    }
 }

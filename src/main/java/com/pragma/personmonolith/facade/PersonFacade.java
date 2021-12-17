@@ -73,7 +73,7 @@ public class PersonFacade {
         return personImageDtoEdit;
     }
 
-    private Image mappingImage(Integer imageId, Integer personId, MultipartFile imagePart){
+    private Image mappingImage(String imageId, Integer personId, MultipartFile imagePart){
         Image image = new Image();
         image.setId(imageId);
         image.setImage(ObjectTypeConverter.image2Base64(imagePart));
