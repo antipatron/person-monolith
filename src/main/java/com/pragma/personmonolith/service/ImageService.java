@@ -43,14 +43,9 @@ public class ImageService {
         if(Objects.isNull(image.getId())){
             throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
         }
+        imageRepository.insert(image);
 
-        Image imageTransaction = imageRepository.findById(image.getId())
-                .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
-
-        imageTransaction.setImage(image.getImage());
-        imageTransaction.setPersonId(image.getPersonId());
-
-        return imageTransaction;
+        return image;
     }
 
     public void deleteImage(String imageId){
