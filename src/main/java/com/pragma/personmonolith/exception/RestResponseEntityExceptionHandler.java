@@ -1,5 +1,6 @@
 package com.pragma.personmonolith.exception;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Joiner;
 import com.pragma.personmonolith.util.StandardResponse;
 import org.slf4j.Logger;
@@ -8,12 +9,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +38,26 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ImageNotComeBodyException.class)
+    @ExceptionHandler(DataDuplicatedException.class)
+    public final ResponseEntity<StandardResponse> handleDataDuplicatedException(HttpServletRequest request, DataDuplicatedException ex){
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ImageNotComeBodyException.class})
     public final ResponseEntity<StandardResponse> handleImageNotComeBody(HttpServletRequest request, ImageNotComeBodyException ex){
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PersonJustOneImageException.class)
+    public final ResponseEntity<StandardResponse> handlePersonJustOneImage(HttpServletRequest request, PersonJustOneImageException ex){
         logger.error(request.getRequestURL().toString(), ex);
         return new ResponseEntity<>(new StandardResponse(
                 StandardResponse.StatusStandardResponse.ERROR,
@@ -105,4 +127,39 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(JsonMappingException.class)
+    public final ResponseEntity<StandardResponse> handleJsonMappingException(HttpServletRequest request, JsonMappingException ex){
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.error(request.getDescription(true), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.error(request.getDescription(true), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.error(request.getDescription(true), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
 }

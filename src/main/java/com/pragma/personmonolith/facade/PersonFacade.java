@@ -3,12 +3,11 @@ package com.pragma.personmonolith.facade;
 import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.dto.PersonImageDto;
 import com.pragma.personmonolith.exception.ImageNotComeBodyException;
+import com.pragma.personmonolith.mapper.PersonMapper;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.Person;
-import com.pragma.personmonolith.mapper.PersonMapper;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
-import com.pragma.personmonolith.util.ObjectTypeConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.pragma.personmonolith.util.ObjectTypeConverter.image2Base64;
-import static com.pragma.personmonolith.util.OptionalFieldValidator.imageComeOnBody;
+import static com.pragma.personmonolith.util.OptionalFieldValidator.imageFileComeOnBody;
+import static com.pragma.personmonolith.util.OptionalFieldValidator.imageIdComeOnBody;
 
 @Service
 @Transactional
@@ -57,24 +57,23 @@ public class PersonFacade {
 
         //TODO puedo refactorizar esta parte y juntarla con la parte del guardar.
         PersonImageDto personImageDtoEdit = new PersonImageDto();
+        personImageDtoEdit.setImageId(imageService.findByPersonId(personImageDto.getPersonId()).getId());
 
-        if (!imagePart.isEmpty()){
-            //TODO comprobar que si tenga imagen en bd (restriccion es una persona una imagen)
+        if (imageFileComeOnBody(imagePart)){
             if(hasImage(personImageDto.getPersonId())){
-                if(imageComeOnBody(personImageDto.getImageId())){
+                if(imageIdComeOnBody(personImageDto.getImageId())){
                     Image imageEdit = mappingImage(personImageDto.getImageId(), personImageDto.getPersonId(), imagePart);
                     imageEdit = imageService.editImage(imageEdit);
                     personImageDtoEdit.setImageId(imageEdit.getId());
-                }else{
+                }else {
                     throw new ImageNotComeBodyException("exception.not_come_body.image");
                 }
-
             }else{
-                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(), imagePart));
+                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(),imagePart));
                 personImageDtoEdit.setImageId(image.getId());
             }
         }
-        
+
         personImageDtoEdit.setPersonId(personDto.getId());
         personImageDtoEdit.setName(personDto.getName());
         personImageDtoEdit.setLastName(personDto.getLastName());

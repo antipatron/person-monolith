@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -31,8 +32,8 @@ public class ImageController {
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
     public ResponseEntity<StandardResponse<ImageDto>> createImage(
-            @Valid @RequestPart("imageDto") ImageDto imageDto, @RequestPart MultipartFile image){
-        ImageDto imageDto1 = imageFacade.createImage(imageDto, image);
+            @NotNull @RequestParam("personId") Integer personId, @RequestPart MultipartFile image){
+        ImageDto imageDto1 = imageFacade.createImage(personId, image);
 
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,
@@ -48,7 +49,7 @@ public class ImageController {
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
     public ResponseEntity<StandardResponse<ImageDto>> editImage(
-            @Valid @RequestPart("imageDto") ImageDto imageDto, @RequestPart MultipartFile image){
+            @Valid @RequestPart("imageDto") ImageDto imageDto,@Valid @RequestPart MultipartFile image){
         ImageDto imageDto1 = imageFacade.editImage(imageDto, image);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,

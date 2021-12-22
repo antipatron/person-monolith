@@ -85,4 +85,19 @@ public class ImageService {
                 .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
 
     }
+
+    public Image findByPersonIdAndId(Integer personId, String id){
+        if(Objects.isNull(personId)){
+            throw new ObjectNotFoundException(personId, "exception.objeto_no_encontrado");
+        }
+
+        if(Objects.isNull(id)){
+            throw new ObjectNotFoundException(personId, "exception.objeto_no_encontrado");
+        }
+
+        return imageRepository.findByPersonIdAndId(personId, id).orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
+
+    }
+
+
 }

@@ -54,7 +54,7 @@ public class PersonController {
             @ApiResponse(code = 500, message = "Error del servidor al procesar la respuesta"),
     })
     public ResponseEntity<StandardResponse<PersonImageDto>> editPerson(
-            @Valid @RequestPart("person") PersonImageDto personImageDto, @RequestPart MultipartFile image){
+            @Valid @RequestPart("person") PersonImageDto personImageDto, @RequestPart(required = false) MultipartFile image){
         PersonImageDto personImageDto1 = personFacade.editPerson(personImageDto, image);
         return ResponseEntity.ok(new StandardResponse<>(
                 StandardResponse.StatusStandardResponse.OK,

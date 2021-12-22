@@ -45,7 +45,6 @@ public class PersonService{
             throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
         }
 
-        System.out.println("ID: ##"+person.getId());
         Person personTransaction = personRepository.findById(person.getId())
                 .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.person"));
 
