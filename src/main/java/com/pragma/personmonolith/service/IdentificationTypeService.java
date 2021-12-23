@@ -3,6 +3,7 @@ package com.pragma.personmonolith.service;
 import com.pragma.personmonolith.exception.DataNotFoundException;
 import com.pragma.personmonolith.model.IdentificationType;
 import com.pragma.personmonolith.model.IdentificationTypeRepository;
+import lombok.AllArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,12 +12,9 @@ import java.util.Objects;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class IdentificationTypeService {
     private IdentificationTypeRepository identificationTypeRepository;
-
-    public IdentificationTypeService(IdentificationTypeRepository identificationTypeRepository) {
-        this.identificationTypeRepository = identificationTypeRepository;
-    }
 
     public IdentificationType findById(Integer id){
         if(Objects.isNull(id)){

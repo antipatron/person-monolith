@@ -6,6 +6,7 @@ import com.pragma.personmonolith.exception.DataNotFoundException;
 import com.pragma.personmonolith.exception.ObjectNoEncontradoException;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.ImageRepository;
+import lombok.AllArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,9 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class ImageService {
     private ImageRepository imageRepository;
-
-    public ImageService(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-    }
 
     public Image createImage(Image image){
         if(Objects.nonNull(image.getId())){
@@ -96,8 +94,6 @@ public class ImageService {
         }
 
         return imageRepository.findByPersonIdAndId(personId, id).orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
-
     }
-
 
 }
