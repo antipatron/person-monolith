@@ -1,6 +1,5 @@
 package com.pragma.personmonolith.facade;
 
-import com.pragma.personmonolith.dto.ImageDto;
 import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.dto.PersonImageDto;
 import com.pragma.personmonolith.exception.ImageNotComeBodyException;
@@ -16,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static com.pragma.personmonolith.util.ObjectTypeConverter.image2Base64;
 import static com.pragma.personmonolith.util.OptionalFieldValidator.imageFileComeOnBody;
 import static com.pragma.personmonolith.util.OptionalFieldValidator.imageIdComeOnBody;
 
@@ -137,10 +136,10 @@ public class PersonFacade {
     }
 
     public List<PersonImageDto> findAll(){
-
-        List<PersonDto> personDtoList = personMapper.toDto(personService.findAll());
         List<PersonImageDto> personImageDtoList = new ArrayList<>();
 
+        List<PersonDto> personDtoList = personMapper.toDto(personService.findAll());
+        List<Image> imageList = imageService.findAll();
 
         personDtoList.forEach(personDto -> {
 
@@ -153,7 +152,15 @@ public class PersonFacade {
             personImageDto.setIdentificationTypeId(personDto.getIdentificationTypeId());
             personImageDto.setAge(personDto.getAge());
             personImageDto.setCityBirth(personDto.getCityBirth());
-            personImageDto.setImageId(imageService.findByPersonId(personDto.getId()).getId());
+
+            Optional<Image> imageOptional =  imageList.stream()
+                    .filter(image -> image.getPersonId().equals(personDto.getId())).findFirst();
+
+            if(imageOptional.isPresent()){
+                personImageDto.setImageId(imageOptional.get().getId());
+                personImageDto.setImage(imageOptional.get().getImage());
+            }
+
 
             personImageDtoList.add(personImageDto);
 
