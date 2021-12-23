@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,12 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class FileStorageS3Util {
     private final AmazonS3 amazonS3;
-
-    public FileStorageS3Util(AmazonS3 amazonS3) {
-        this.amazonS3 = amazonS3;
-    }
 
     public void upload(String path,
                        String fileName,

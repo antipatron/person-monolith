@@ -9,32 +9,25 @@ import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.service.FileStoreService;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
-import com.pragma.personmonolith.util.ObjectTypeConverter;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.pragma.personmonolith.util.ObjectTypeConverter.image2Base64;
 import static com.pragma.personmonolith.util.OptionalFieldValidator.imageFileComeOnBody;
 import static com.pragma.personmonolith.util.OptionalFieldValidator.imageIdComeOnBody;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class ImageFacade {
 
     private ImageService imageService;
     private PersonService personService;
     private ImageMapper imageMapper;
     private FileStoreService fileStoreService;
-
-    public ImageFacade(ImageService imageService,PersonService personService, FileStoreService fileStoreService, ImageMapper imageMapper) {
-        this.imageService = imageService;
-        this.personService = personService;
-        this.fileStoreService = fileStoreService;
-        this.imageMapper = imageMapper;
-    }
 
     public ImageDto createImage(Integer personId, MultipartFile imagePart){
         ImageDto imageDto = new ImageDto();

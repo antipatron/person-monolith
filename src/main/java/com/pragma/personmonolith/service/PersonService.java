@@ -6,6 +6,7 @@ import com.pragma.personmonolith.exception.DataNotFoundException;
 import com.pragma.personmonolith.exception.ObjectNoEncontradoException;
 import com.pragma.personmonolith.model.Person;
 import com.pragma.personmonolith.model.PersonRepository;
+import lombok.AllArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,9 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class PersonService{
     private PersonRepository personRepository;
-
-
-    public PersonService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
 
     public Person createPerson(Person person){
         if(Objects.nonNull(person.getId())){
@@ -71,6 +68,7 @@ public class PersonService{
 
     public List<Person> findAll(){
         List<Person> personList = personRepository.findAll();
+        personList.forEach(person -> System.out.println(person.getIdentification()));
         if (personList.isEmpty()){
             throw new DataNotFoundException("exception.data_not_found.person");
         }
@@ -100,11 +98,4 @@ public class PersonService{
         }
         return personList;
     }
-
-
-
-
-
-
-
 }

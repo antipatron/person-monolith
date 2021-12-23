@@ -9,6 +9,8 @@ import com.pragma.personmonolith.model.Person;
 import com.pragma.personmonolith.service.FileStoreService;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,20 +24,13 @@ import static com.pragma.personmonolith.util.OptionalFieldValidator.imageIdComeO
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class PersonFacade {
     private PersonService personService;
     private ImageService imageService;
     private PersonMapper personMapper;
     private FileStoreService fileStoreService;
-
-    //TODO rafactorizar a I
-    public PersonFacade(PersonService personService,ImageService imageService,FileStoreService fileStoreService,
-                        PersonMapper personMapper) {
-        this.personService = personService;
-        this.imageService = imageService;
-        this.fileStoreService = fileStoreService;
-        this.personMapper = personMapper;
-    }
+    private ModelMapper modelMapper;
 
     public PersonImageDto createPerson(PersonImageDto personImageDto, MultipartFile imagePart){
         Person person = mappingPerson(personImageDto);
@@ -48,11 +43,8 @@ public class PersonFacade {
             personImageDto.setImageId(image.getId());
 
         }
-
         return personImageDto;
     }
-
-
 
     public PersonImageDto editPerson(PersonImageDto personImageDto, MultipartFile imagePart){
 
@@ -124,8 +116,7 @@ public class PersonFacade {
     }
 
     public void deletePerson(Integer personId){
-        //TODO buscar si la persona tiene imagen, si es así, eliminar la imagen
-        Image image = imageService.findByPersonId(personId);
+        final Image image = imageService.findByPersonId(personId);
         if(!image.getImage().isEmpty()){
             imageService.deleteImage(image.getId());
             fileStoreService.deleteFile(image.getImageName(),personId);
@@ -136,41 +127,24 @@ public class PersonFacade {
     }
 
     public List<PersonImageDto> findAll(){
-        List<PersonImageDto> personImageDtoList = new ArrayList<>();
+        final List<PersonImageDto> personImageDtoList = new ArrayList<>();
+        final List<PersonDto> personDtoList = personMapper.toDto(personService.findAll());
+        final List<Image> imageList = imageService.findAll();
 
-        List<PersonDto> personDtoList = personMapper.toDto(personService.findAll());
-        List<Image> imageList = imageService.findAll();
+        personDtoList.forEach(personDto -> System.out.println(personDto.toString()));
 
         personDtoList.forEach(personDto -> {
-
-            PersonImageDto personImageDto = new PersonImageDto();
-
-            personImageDto.setPersonId(personDto.getId());
-            personImageDto.setName(personDto.getName());
-            personImageDto.setLastName(personDto.getLastName());
-            personImageDto.setIdentification(personDto.getIdentification());
-            personImageDto.setIdentificationTypeId(personDto.getIdentificationTypeId());
-            personImageDto.setAge(personDto.getAge());
-            personImageDto.setCityBirth(personDto.getCityBirth());
-
+            PersonImageDto personImageDto = modelMapper.map(personDto, PersonImageDto.class);
             Optional<Image> imageOptional =  imageList.stream()
                     .filter(image -> image.getPersonId().equals(personDto.getId())).findFirst();
-
             if(imageOptional.isPresent()){
                 personImageDto.setImageId(imageOptional.get().getId());
                 personImageDto.setImage(imageOptional.get().getImage());
             }
-
-
             personImageDtoList.add(personImageDto);
-
         });
 
-
-
         return personImageDtoList;
-
-
     }
 
     public List<PersonDto> findByAgeGreaterThanEqual(Integer age){
