@@ -1,11 +1,13 @@
 package com.pragma.personmonolith.facade;
 
+import com.pragma.personmonolith.dto.ImageDto;
 import com.pragma.personmonolith.dto.PersonDto;
 import com.pragma.personmonolith.dto.PersonImageDto;
 import com.pragma.personmonolith.exception.ImageNotComeBodyException;
 import com.pragma.personmonolith.mapper.PersonMapper;
 import com.pragma.personmonolith.model.Image;
 import com.pragma.personmonolith.model.Person;
+import com.pragma.personmonolith.service.FileStoreService;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,14 @@ public class PersonFacade {
     private PersonService personService;
     private ImageService imageService;
     private PersonMapper personMapper;
+    private FileStoreService fileStoreService;
 
     //TODO rafactorizar a I
-    public PersonFacade(PersonService personService,ImageService imageService,
+    public PersonFacade(PersonService personService,ImageService imageService,FileStoreService fileStoreService,
                         PersonMapper personMapper) {
         this.personService = personService;
         this.imageService = imageService;
+        this.fileStoreService = fileStoreService;
         this.personMapper = personMapper;
     }
 
@@ -40,9 +44,10 @@ public class PersonFacade {
         personImageDto.setPersonId(person.getId());
 
         if (!imagePart.isEmpty()){
-            Image image= mappingImage(personImageDto.getImageId(), person.getId(),imagePart);
-            image = imageService.createImage(image);
+            Image imageS3 =  fileStoreService.createFile(imagePart.getOriginalFilename(),personImageDto.getPersonId(),imagePart);
+            Image image= imageService.createImage(imageS3);
             personImageDto.setImageId(image.getId());
+
         }
 
         return personImageDto;
@@ -58,18 +63,24 @@ public class PersonFacade {
         //TODO puedo refactorizar esta parte y juntarla con la parte del guardar.
         PersonImageDto personImageDtoEdit = new PersonImageDto();
         personImageDtoEdit.setImageId(imageService.findByPersonId(personImageDto.getPersonId()).getId());
+        final String imageName = imagePart.getOriginalFilename();
 
         if (imageFileComeOnBody(imagePart)){
             if(hasImage(personImageDto.getPersonId())){
                 if(imageIdComeOnBody(personImageDto.getImageId())){
-                    Image imageEdit = mappingImage(personImageDto.getImageId(), personImageDto.getPersonId(), imagePart);
+                    Image imageFind = imageService.findByPersonIdAndId(personImageDto.getPersonId(), personImageDto.getImageId());
+                    fileStoreService.deleteFile(imageFind.getImageName(), personImageDto.getPersonId());
+                    Image imageS3 = fileStoreService.createFile(imageName, personImageDto.getPersonId(),imagePart);
+
+                    Image imageEdit = mappingImage(personImageDto.getImageId(), personImageDto.getPersonId(), imageS3.getImage(), imageName);
                     imageEdit = imageService.editImage(imageEdit);
                     personImageDtoEdit.setImageId(imageEdit.getId());
                 }else {
                     throw new ImageNotComeBodyException("exception.not_come_body.image");
                 }
             }else{
-                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(),imagePart));
+                Image imageS3 = fileStoreService.createFile(imageName, personImageDto.getPersonId(),imagePart);
+                Image image = imageService.createImage(mappingImage(personImageDto.getImageId(),personImageDto.getPersonId(),imageS3.getImage(),imageName));
                 personImageDtoEdit.setImageId(image.getId());
             }
         }
@@ -85,10 +96,11 @@ public class PersonFacade {
         return personImageDtoEdit;
     }
 
-    private Image mappingImage(String imageId, Integer personId, MultipartFile imagePart){
+    private Image mappingImage(String imageId, Integer personId, String imagePart, String imageName){
         Image image = new Image();
         image.setId(imageId);
-        image.setImage(image2Base64(imagePart));
+        image.setImage(imagePart);
+        image.setImageName(imageName);
         image.setPersonId(personId);
         return image;
     }
@@ -117,6 +129,7 @@ public class PersonFacade {
         Image image = imageService.findByPersonId(personId);
         if(!image.getImage().isEmpty()){
             imageService.deleteImage(image.getId());
+            fileStoreService.deleteFile(image.getImageName(),personId);
         }
 
         personService.deletePerson(personId);
