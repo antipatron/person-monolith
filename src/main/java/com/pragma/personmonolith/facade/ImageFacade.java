@@ -6,6 +6,7 @@ import com.pragma.personmonolith.exception.ImageNotComeBodyException;
 import com.pragma.personmonolith.exception.PersonJustOneImageException;
 import com.pragma.personmonolith.mapper.ImageMapper;
 import com.pragma.personmonolith.model.Image;
+import com.pragma.personmonolith.service.FileStoreService;
 import com.pragma.personmonolith.service.ImageService;
 import com.pragma.personmonolith.service.PersonService;
 import com.pragma.personmonolith.util.ObjectTypeConverter;
@@ -26,10 +27,12 @@ public class ImageFacade {
     private ImageService imageService;
     private PersonService personService;
     private ImageMapper imageMapper;
+    private FileStoreService fileStoreService;
 
-    public ImageFacade(ImageService imageService,PersonService personService, ImageMapper imageMapper) {
+    public ImageFacade(ImageService imageService,PersonService personService, FileStoreService fileStoreService, ImageMapper imageMapper) {
         this.imageService = imageService;
         this.personService = personService;
+        this.fileStoreService = fileStoreService;
         this.imageMapper = imageMapper;
     }
 
@@ -39,20 +42,31 @@ public class ImageFacade {
         if(hasImage(personId)){
             throw new PersonJustOneImageException("exception.person_just_one_image.image");
         }
-        imageDto.setImage(ObjectTypeConverter.image2Base64(imagePart));
-        imageDto.setPersonId(personId);
+        if(!imagePart.isEmpty()){
+            final String imageName = imagePart.getOriginalFilename();
+            Image imageS3 = fileStoreService.createFile(imageName,personId,imagePart);
+            imageDto.setImage(imageS3.getImage());
+            imageDto.setImageName(imageS3.getImageName());
+            imageDto.setPersonId(personId);
+        }else{
+            throw new ImageNotComeBodyException("exception.image_not_come_body.image");
+        }
+
         return imageMapper.toDto(imageService.createImage(imageMapper.toEntity(imageDto)));
     }
 
     public ImageDto editImage(ImageDto imageDto, MultipartFile imagePart){
         personService.findById(imageDto.getPersonId());
         ImageDto imageDtoEdit = imageMapper.toDto(imageService.findByPersonIdAndId(imageDto.getPersonId(), imageDto.getId()));
+        final String imageName = imagePart.getOriginalFilename();
 
         if (imageFileComeOnBody(imagePart)){
             if(hasImage(imageDto.getPersonId(), imageDto.getId())){
                 if(imageIdComeOnBody(imageDto.getId())){
-                    imageDtoEdit = imageMapper.toDto(imageService.editImage(
-                            mappingImage(imageDto.getId(), imageDto.getPersonId(), imagePart)));
+                    fileStoreService.deleteFile(imageDtoEdit.getImageName(),imageDto.getPersonId());
+                    Image imageS3 = fileStoreService.createFile(imageName,imageDto.getPersonId(),imagePart);
+                    imageS3.setId(imageDto.getId());
+                    imageDtoEdit = imageMapper.toDto(imageService.editImage(imageS3));
                 }else {
                     throw new ImageNotComeBodyException("exception.not_come_body.image");
                 }
@@ -71,15 +85,11 @@ public class ImageFacade {
         return !imageService.findByPersonId(personId).getImage().isEmpty();
     }
 
-    private Image mappingImage(String imageId, Integer personId, MultipartFile imagePart){
-        Image image = new Image();
-        image.setId(imageId);
-        image.setImage(image2Base64(imagePart));
-        image.setPersonId(personId);
-        return image;
-    }
+
 
     public void deleteImage(String imageId){
+        ImageDto imageDto = imageMapper.toDto(imageService.findById(imageId));
+        fileStoreService.deleteFile(imageDto.getImageName(), imageDto.getPersonId());
         imageService.deleteImage(imageId);
 
     }
