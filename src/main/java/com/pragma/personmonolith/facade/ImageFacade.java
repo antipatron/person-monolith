@@ -38,7 +38,7 @@ public class ImageFacade {
         if(!imagePart.isEmpty()){
             final String imageName = imagePart.getOriginalFilename();
             Image imageS3 = fileStoreService.createFile(imageName,personId,imagePart);
-            imageDto.setImage(imageS3.getImage());
+            imageDto.setImageUrl(imageS3.getImageUrl());
             imageDto.setImageName(imageS3.getImageName());
             imageDto.setPersonId(personId);
         }else{
@@ -72,10 +72,10 @@ public class ImageFacade {
     }
 
     private boolean hasImage(Integer personId, String id){
-        return !imageService.findByPersonIdAndId(personId, id).getImage().isEmpty();
+        return !imageService.findByPersonIdAndId(personId, id).getImageUrl().isEmpty();
     }
     private boolean hasImage(Integer personId){
-        return !imageService.findByPersonId(personId).getImage().isEmpty();
+        return !imageService.findByPersonId(personId).getImageUrl().isEmpty();
     }
 
 

@@ -51,7 +51,7 @@ public class FileStoreService {
             throw new IllegalStateException("Failed to upload file", e);
         }
         final Image image = new Image();
-        image.setImage(urlBucket.concat(String.valueOf(personId)).concat("/").concat(fileName));
+        image.setImageUrl(urlBucket.concat(String.valueOf(personId)).concat("/").concat(fileName));
         image.setImageName(fileName);
         image.setPersonId(personId);
 

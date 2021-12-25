@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class ImageDto {
 
     private String id;
-    private String image;
+    private String imageUrl;
     private String imageName;
 
     @NotNull

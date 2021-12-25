@@ -10,11 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor @NoArgsConstructor
 @Builder @Getter
 @Setter @Generated
+@ToString
 public class Image {
 
     @Id
     private String id;
-    private String image;
-    private  String imageName;
+    private String imageUrl;
+    private String imageName;
     private Integer personId;
 }

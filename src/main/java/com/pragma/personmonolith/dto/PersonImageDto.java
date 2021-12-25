@@ -22,6 +22,6 @@ public class PersonImageDto {
     @NotBlank
     private String cityBirth;
     private String imageId;
-    private String image;
+    private String imageUrl;
 
 }

@@ -70,14 +70,14 @@ public class ImageService {
             throw new ObjectNotFoundException(personId, "exception.objeto_no_encontrado");
         }
         Image imageTemp = new Image();
-        imageTemp.setImage("");
+        imageTemp.setImageUrl("");
         return imageRepository.findByPersonId(personId).orElse(imageTemp);
 
     }
 
     public Image findById(String id){
         if(Objects.isNull(id)){
-            throw new ObjectNotFoundException(id, "exception.objeto_no_encontrado");
+            throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
         }
         return imageRepository.findById(id)
                 .orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
@@ -86,11 +86,11 @@ public class ImageService {
 
     public Image findByPersonIdAndId(Integer personId, String id){
         if(Objects.isNull(personId)){
-            throw new ObjectNotFoundException(personId, "exception.objeto_no_encontrado");
+            throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
         }
 
         if(Objects.isNull(id)){
-            throw new ObjectNotFoundException(personId, "exception.objeto_no_encontrado");
+            throw new ObjectNoEncontradoException("exception.objeto_no_encontrado");
         }
 
         return imageRepository.findByPersonIdAndId(personId, id).orElseThrow(()-> new DataNotFoundException("exception.data_not_found.image"));
