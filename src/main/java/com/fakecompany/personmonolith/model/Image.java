@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "image")
-@JsonPropertyOrder({"id","description","name"})
+@JsonPropertyOrder({"id","imageUrl","imageName","personId"})
 @AllArgsConstructor @NoArgsConstructor
 @Builder @Getter
 @Setter @Generated
