@@ -96,9 +96,11 @@ public class PersonFacade {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         personDtoList.forEach(personDto -> System.out.println(personDto.toString()));
+        imageList.forEach(image -> System.out.println(image.toString()));
 
         personDtoList.forEach(personDto -> {
             PersonImageDto personImageDto = modelMapper.map(personDto, PersonImageDto.class);
+
             personImageDto.setPersonId(personDto.getId());
             Optional<Image> imageOptional =  imageList.stream()
                     .filter(image -> image.getPersonId().equals(personDto.getId())).findAny();

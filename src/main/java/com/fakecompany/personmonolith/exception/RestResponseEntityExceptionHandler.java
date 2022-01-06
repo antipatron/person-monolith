@@ -136,6 +136,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    public final ResponseEntity<StandardResponse> handleJsonMappingException(HttpServletRequest request, Exception ex){
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>(new StandardResponse(
+                StandardResponse.StatusStandardResponse.ERROR,
+                "Unexpected error, contact the administrator. Detail: "+ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         logger.error(request.getDescription(true), ex);
