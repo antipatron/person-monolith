@@ -7,9 +7,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "identification_type")
-@AllArgsConstructor @NoArgsConstructor
-@Builder @Getter
-@Setter @Generated
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class IdentificationType {
 
     @Id

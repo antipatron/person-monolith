@@ -7,10 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "image")
 @JsonPropertyOrder({"id","imageUrl","imageName","personId"})
-@AllArgsConstructor @NoArgsConstructor
-@Builder @Getter
-@Setter @Generated
-@ToString
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Image {
 
     @Id

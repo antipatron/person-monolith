@@ -5,7 +5,10 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@AllArgsConstructor @NoArgsConstructor @Data @Builder @Getter @Setter @Generated
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonImageDto {
 
     private Integer personId;

@@ -6,9 +6,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "person")
-@AllArgsConstructor @NoArgsConstructor
-@Builder @Getter
-@Setter @Generated
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Person {
 
     @Id

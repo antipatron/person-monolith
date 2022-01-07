@@ -6,7 +6,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@AllArgsConstructor @NoArgsConstructor @Data @Builder @Getter @Setter @Generated
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonDto {
 
     private Integer id;

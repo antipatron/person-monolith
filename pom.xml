@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.fakecompany.personmonolith</groupId>
     <artifactId>person-monolith</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>2021.12.4</version>
     <name>person-monolith</name>
     <description>Demo project for Spring Boot</description>
     <properties>
